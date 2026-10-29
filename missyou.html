@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ပြန်တွဲကြရအောင် 💕</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pyidaungsu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ffeef8 0%, #ffd6e7 50%, #fbaed2 100%);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Floating Flower Petals Animation */
+    .petal {
+      position: absolute;
+      top: -10px;
+      pointer-events: none;
+      animation: fall linear infinite;
+      z-index: 1;
+      opacity: 0.8;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-10px) rotate(0deg) scale(0.8);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(105vh) rotate(360deg) scale(1.2);
+        opacity: 0.2;
+      }
+    }
+
+    /* Main Container without White Card Frame */
+    .card {
+      background: transparent;
+      border-radius: 0;
+      padding: 20px;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      box-shadow: none;
+      position: relative;
+      z-index: 10;
+      border: none;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #4a3e4e;
+      margin-bottom: 20px;
+      min-height: 36px;
+    }
+
+    .gif-container {
+      width: 170px;
+      height: 170px;
+      margin: 0 auto 15px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .gif-container img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .hint-text {
+      font-size: 14px;
+      color: #e65c8a;
+      min-height: 24px;
+      margin-bottom: 18px;
+      font-weight: 500;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      position: relative;
+      min-height: 70px;
+    }
+
+    button {
+      border: none;
+      padding: 10px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .btn-yes {
+      background: linear-gradient(135deg, #ff5e62, #ff9966);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 94, 98, 0.35);
+    }
+
+    .btn-yes:hover {
+      box-shadow: 0 6px 20px rgba(255, 94, 98, 0.5);
+    }
+
+    .btn-no {
+      background-color: #b2ebd9;
+      color: #2d6a58;
+      box-shadow: 0 4px 10px rgba(178, 235, 217, 0.4);
+    }
+
+    .btn-no:hover {
+      background-color: #9fe2cd;
+    }
+
+    /* Screen 4 Full Screen Red Button Page */
+    #page4-fullscreen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #ff3b30;
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn-fullscreen {
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+      background-color: #ff3b30;
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Screen 6 Summary Table Style */
+    .summary-card {
+      text-align: left;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 25px;
+      border-radius: 20px;
+    }
+
+    .summary-title {
+      text-align: center;
+      color: #e65c8a;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .summary-list {
+      list-style: none;
+      margin-bottom: 25px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px dashed #f8a5c2;
+      font-size: 14px;
+    }
+
+    .summary-item .q-text {
+      color: #4a3e4e;
+      font-weight: 500;
+    }
+
+    .summary-item .a-text {
+      color: #e65c8a;
+      font-weight: 600;
+    }
+
+    .btn-save {
+      width: 100%;
+      background: linear-gradient(135deg, #ff5e62, #ff9966);
+      color: white;
+      padding: 12px;
+      font-size: 15px;
+      box-shadow: 0 4px 15px rgba(255, 94, 98, 0.35);
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Audio Player (Background Music) -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="about.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Floating Flowers Layer -->
+  <div id="flower-container"></div>
+
+  <!-- Main Container -->
+  <div class="card" id="main-card">
+    
+    <!-- PAGE 1 -->
+    <div id="page1" class="page active">
+      <h2 class="title">ပြန်တွဲကြရအောင်နော်🥺</h2>
+      <div class="gif-container">
+        <img src="bu12.webp" alt="Sad Bear">
+      </div>
+      <div class="hint-text" id="p1-hint"></div>
+      <div class="btn-group">
+        <button class="btn-yes" id="p1-yes" onclick="goToPage(2)">Yes</button>
+        <button class="btn-no" id="p1-no" onclick="handleP1No()">No</button>
+      </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div id="page2" class="page">
+      <h2 class="title">သတိရနေခဲ့တာ သိလား...</h2>
+      <div class="gif-container">
+        <img src="bu9.gif" alt="Hug Bears">
+      </div>
+      <div class="hint-text" id="p2-hint"></div>
+      <div class="btn-group">
+        <button class="btn-no" id="p2-no" onclick="handleP2NoClick()">မရတော့ပါဘူး</button>
+        <button class="btn-yes" id="p2-yes" onclick="goToPage(3)">တူတူပဲ</button>
+      </div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div id="page3" class="page">
+      <h2 class="title">ချစ်သေးတယ်မလား?</h2>
+      <div class="gif-container">
+        <img src="bu10.gif" alt="Bear with Bag">
+      </div>
+      <div class="hint-text"></div>
+      <div class="btn-group">
+        <button class="btn-yes" onclick="goToPage(4)">ချစ်တယ်</button>
+        <button class="btn-no" id="p3-no" onclick="hideP3No()">မချစ်တော့ဘူး</button>
+      </div>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div id="page4" class="page">
+      <h2 class="title">ပြန်လာမယ်မလား</h2>
+      <div class="gif-container">
+        <img src="cry.gif" alt="Crying Bear Phone">
+      </div>
+      <div class="hint-text"></div>
+      <div class="btn-group">
+        <button class="btn-yes" onclick="triggerFullScreenRed()">တော်ပြီ</button>
+        <button class="btn-no" onclick="goToPage(5)">အင်း</button>
+      </div>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div id="page5" class="page">
+      <h2 class="title">ဒါဆို ပြန်ချစ်ကြမယ်နော်</h2>
+      <div class="gif-container">
+        <img src="bu13.gif" alt="Loving Bears">
+      </div>
+      <div class="hint-text"></div>
+      <div class="btn-group">
+        <button class="btn-yes" onclick="goToPage(6)">Yes</button>
+        <button class="btn-no" id="p5-nope" onclick="hideP5Nope()">Nope</button>
+      </div>
+    </div>
+
+    <!-- PAGE 6 (Summary Page) -->
+    <div id="page6" class="page summary-card">
+      <div class="summary-title">
+        <span>💖</span> Our Love Agreement <span>💖</span>
+      </div>
+      <ul class="summary-list">
+        <li class="summary-item">
+          <span class="q-text">1. ပြန်တွဲကြရအောင်နော်🥺</span>
+          <span class="a-text">Yes</span>
+        </li>
+        <li class="summary-item">
+          <span class="q-text">2. သတိရနေခဲ့တာ သိလား..</span>
+          <span class="a-text">တူတူပဲ</span>
+        </li>
+        <li class="summary-item">
+          <span class="q-text">3. ချစ်သေးတယ်မလား?</span>
+          <span class="a-text">ချစ်တယ်</span>
+        </li>
+        <li class="summary-item">
+          <span class="q-text">4. ပြန်လာမယ်မလား</span>
+          <span class="a-text">အင်း</span>
+        </li>
+        <li class="summary-item">
+          <span class="q-text">5. ဒါဆို ပြန်ချစ်ကြမယ်နော်</span>
+          <span class="a-text">Yes</span>
+        </li>
+      </ul>
+      <button class="btn-save" onclick="saveAsPNG()">ဒီစာချုပ်လွှာကို PNG သိမ်းမယ် 📸</button>
+    </div>
+
+  </div>
+
+  <!-- Fullscreen Red Overlay Page -->
+  <div id="page4-fullscreen">
+    <button class="btn-fullscreen" onclick="goToPageFromFullScreen(5)">အင်း</button>
+  </div>
+
+  <script>
+    // Play audio on first user click anywhere (to satisfy browser autoplay policies)
+    let musicPlayed = false;
+    function playMusic() {
+      if (!musicPlayed) {
+        const music = document.getElementById('bg-music');
+        music.play().catch(e => console.log("Audio play allowed after interaction"));
+        musicPlayed = true;
+      }
+    }
+    document.body.addEventListener('click', playMusic, { once: true });
+
+    // Floating Petals Animation
+    const flowerContainer = document.getElementById('flower-container');
+    const flowers = ['🌸', '🌺', '🌷', '✨', '💖'];
+
+    function createPetal() {
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      petal.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+      petal.style.left = Math.random() * 100 + 'vw';
+      petal.style.animationDuration = (Math.random() * 3 + 4) + 's';
+      petal.style.fontSize = (Math.random() * 12 + 12) + 'px';
+      flowerContainer.appendChild(petal);
+
+      setTimeout(() => {
+        petal.remove();
+      }, 7000);
+    }
+    setInterval(createPetal, 300);
+
+    // Navigation Logic
+    function goToPage(pageNum) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page' + pageNum).classList.add('active');
+    }
+
+    // Page 1 Logic
+    let p1NoCount = 0;
+    const p1Hints = [
+      "မငြင်းပါနဲ့နော်... 🥺",
+      " တကယ်ကြီးလား 🥺",
+      " မလုပ်ပါနဲ့နော် 😭",
+      " ပြန်စဉ်းစားပေးပါဦးနော် 💔"
+    ];
+    let p1Scale = 1;
+
+    function handleP1No() {
+      p1NoCount++;
+      const hintEl = document.getElementById('p1-hint');
+      const yesBtn = document.getElementById('p1-yes');
+      const noBtn = document.getElementById('p1-no');
+
+      if (p1NoCount <= p1Hints.length) {
+        hintEl.innerText = p1Hints[p1NoCount - 1];
+      }
+
+      p1Scale += 0.25;
+      yesBtn.style.transform = `scale(${p1Scale})`;
+
+      if (p1NoCount >= 5) {
+        noBtn.style.display = 'none';
+        hintEl.innerText = " နှိပ်လို့မရတော့ဘူးနော်! 💖";
+      }
+    }
+
+    // Page 2 Logic (Moving Evasive Button)
+    let p2NoCount = 0;
+    const p2Hints = [
+      "ပြန်စဉ်းစားပေးပါဦးနော် 🥺",
+      "တကယ်မရတော့ဘူးလား 😭",
+      "နားလည်ပေးပါနော်... ❤️",
+      "မငြင်းပါနဲ့တော့နော်... 🥺"
+    ];
+
+    function handleP2NoClick() {
+      p2NoCount++;
+      const noBtn = document.getElementById('p2-no');
+      const hintEl = document.getElementById('p2-hint');
+
+      hintEl.innerText = p2Hints[(p2NoCount - 1) % p2Hints.length];
+
+      // Shift position drastically when clicked
+      noBtn.style.position = 'relative';
+
+      // Bigger distance range
+      let randomX = (Math.random() - 0.5) * 360;
+      let randomY = (Math.random() - 0.5) * 200;
+
+      if (Math.abs(randomX) < 80) randomX = randomX < 0 ? -120 : 120;
+      if (Math.abs(randomY) < 40) randomY = randomY < 0 ? -60 : 60;
+
+      noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+    }
+
+    // Page 3 Logic
+    function hideP3No() {
+      document.getElementById('p3-no').style.display = 'none';
+    }
+
+    // Page 4 Logic
+    function triggerFullScreenRed() {
+      document.getElementById('page4-fullscreen').style.display = 'flex';
+    }
+
+    function goToPageFromFullScreen(pageNum) {
+      document.getElementById('page4-fullscreen').style.display = 'none';
+      goToPage(pageNum);
+    }
+
+    // Page 5 Logic
+    function hideP5Nope() {
+      document.getElementById('p5-nope').style.display = 'none';
+    }
+
+    // Page 6 PNG Export Logic
+    function saveAsPNG() {
+      const card = document.getElementById('main-card');
+      html2canvas(card, {
+        backgroundColor: '#ffd6e7',
+        scale: 2
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'Our-Love-Agreement.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
