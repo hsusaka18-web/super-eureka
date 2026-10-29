@@ -24,6 +24,27 @@
       position: relative;
     }
 
+    /* Floating Music Control Button (Top Right) */
+    .music-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid #f8a5c2;
+      border-radius: 50px;
+      padding: 8px 16px;
+      font-size: 14px;
+      color: #e65c8a;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(5px);
+    }
+
     /* Floating Flower Petals Animation */
     .petal {
       position: absolute;
@@ -222,8 +243,13 @@
 </head>
 <body>
 
+  <!-- Floating Music Toggle Button -->
+  <button class="music-btn" id="music-toggle-btn" onclick="toggleMusic()">
+    <span id="music-icon">🎵</span> <span id="music-status">သီချင်းဖွင့်ရန်</span>
+  </button>
+
   <!-- Audio Player (Background Music) -->
-  <audio id="bg-music" loop preload="auto">
+  <audio id="bg-music" loop playsinline preload="auto">
     <source src="about.mp3" type="audio/mpeg">
   </audio>
 
@@ -336,16 +362,44 @@
   </div>
 
   <script>
-    // Play audio on first user click anywhere (to satisfy browser autoplay policies)
-    let musicPlayed = false;
-    function playMusic() {
-      if (!musicPlayed) {
-        const music = document.getElementById('bg-music');
-        music.play().catch(e => console.log("Audio play allowed after interaction"));
-        musicPlayed = true;
+    const music = document.getElementById('bg-music');
+    const musicStatus = document.getElementById('music-status');
+    const musicIcon = document.getElementById('music-icon');
+    let isPlaying = false;
+
+    // Toggle Music Function
+    function toggleMusic() {
+      if (isPlaying) {
+        music.pause();
+        musicStatus.innerText = "သီချင်းဖွင့်ရန်";
+        musicIcon.innerText = "🎵";
+        isPlaying = false;
+      } else {
+        music.play().then(() => {
+          musicStatus.innerText = "သီချင်းပိတ်ရန်";
+          musicIcon.innerText = "🎶";
+          isPlaying = true;
+        }).catch(err => {
+          console.log("Audio play error:", err);
+        });
       }
     }
-    document.body.addEventListener('click', playMusic, { once: true });
+
+    // Auto Play on Any First Touch/Click (Fixes iOS/Android Restriction)
+    function autoPlayOnFirstTouch() {
+      if (!isPlaying) {
+        music.play().then(() => {
+          musicStatus.innerText = "သီချင်းပိတ်ရန်";
+          musicIcon.innerText = "🎶";
+          isPlaying = true;
+        }).catch(err => console.log("Waiting for user click"));
+      }
+    }
+
+    // Add multiple event listeners for iOS Safari and Mobile WebViews
+    ['touchstart', 'click', 'pointerdown'].forEach(eventType => {
+      document.body.addEventListener(eventType, autoPlayOnFirstTouch, { once: true });
+    });
 
     // Floating Petals Animation
     const flowerContainer = document.getElementById('flower-container');
@@ -368,6 +422,7 @@
 
     // Navigation Logic
     function goToPage(pageNum) {
+      autoPlayOnFirstTouch();
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('page' + pageNum).classList.add('active');
     }
@@ -383,6 +438,7 @@
     let p1Scale = 1;
 
     function handleP1No() {
+      autoPlayOnFirstTouch();
       p1NoCount++;
       const hintEl = document.getElementById('p1-hint');
       const yesBtn = document.getElementById('p1-yes');
@@ -411,16 +467,16 @@
     ];
 
     function handleP2NoClick() {
+      autoPlayOnFirstTouch();
       p2NoCount++;
       const noBtn = document.getElementById('p2-no');
       const hintEl = document.getElementById('p2-hint');
 
       hintEl.innerText = p2Hints[(p2NoCount - 1) % p2Hints.length];
 
-      // Shift position drastically when clicked
+      // Shift position
       noBtn.style.position = 'relative';
 
-      // Bigger distance range
       let randomX = (Math.random() - 0.5) * 360;
       let randomY = (Math.random() - 0.5) * 200;
 
@@ -432,11 +488,13 @@
 
     // Page 3 Logic
     function hideP3No() {
+      autoPlayOnFirstTouch();
       document.getElementById('p3-no').style.display = 'none';
     }
 
     // Page 4 Logic
     function triggerFullScreenRed() {
+      autoPlayOnFirstTouch();
       document.getElementById('page4-fullscreen').style.display = 'flex';
     }
 
@@ -447,6 +505,7 @@
 
     // Page 5 Logic
     function hideP5Nope() {
+      autoPlayOnFirstTouch();
       document.getElementById('p5-nope').style.display = 'none';
     }
 
